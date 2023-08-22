@@ -712,10 +712,13 @@
             "com.aprcomp.Test_1::test_1",
             "com.aprcomp.Test_2::test_2"
         ],
-        "passing_test": [],
+        "passing_test": [
+            "com.aprcomp.Test_3::test_3",
+            "com.aprcomp.Test_4::test_4"
+        ],
         "dependencies": [],
         "count_neg": 3,
-        "count_pos": 0,
+        "count_pos": 2,
         "language": "java",
         "java_version": 8,
         "build_system": "maven",
@@ -741,10 +744,13 @@
             "com.aprcomp.Test_1::test_1",
             "com.aprcomp.Test_2::test_2"
         ],
-        "passing_test": [],
+        "passing_test": [
+            "com.aprcomp.Test_3::test_3",
+            "com.aprcomp.Test_4::test_4"
+        ],
         "dependencies": [],
         "count_neg": 3,
-        "count_pos": 0,
+        "count_pos": 2,
         "language": "java",
         "java_version": 8,
         "build_system": "maven",
@@ -770,10 +776,13 @@
             "com.aprcomp.Test_1::test_1",
             "com.aprcomp.Test_2::test_2"
         ],
-        "passing_test": [],
+        "passing_test": [
+            "com.aprcomp.Test_3::test_3",
+            "com.aprcomp.Test_4::test_4"
+        ],
         "dependencies": [],
         "count_neg": 3,
-        "count_pos": 0,
+        "count_pos": 2,
         "language": "java",
         "java_version": 8,
         "build_system": "maven",
@@ -797,12 +806,15 @@
         "failing_test": [
             "com.aprcomp.Test_0::test_0",
             "com.aprcomp.Test_1::test_1",
-            "com.aprcomp.Test_2::test_2"
+            "com.aprcomp.Test_2::test_2",
+            "com.aprcomp.Test_3::test_3"
         ],
-        "passing_test": [],
+        "passing_test": [
+            "com.aprcomp.Test_4::test_4"
+        ],
         "dependencies": [],
-        "count_neg": 3,
-        "count_pos": 0,
+        "count_neg": 4,
+        "count_pos": 1,
         "language": "java",
         "java_version": 8,
         "build_system": "maven",
@@ -828,10 +840,13 @@
             "com.aprcomp.Test_1::test_1",
             "com.aprcomp.Test_2::test_2"
         ],
-        "passing_test": [],
+        "passing_test": [
+            "com.aprcomp.Test_3::test_3",
+            "com.aprcomp.Test_4::test_4"
+        ],
         "dependencies": [],
         "count_neg": 3,
-        "count_pos": 0,
+        "count_pos": 2,
         "language": "java",
         "java_version": 8,
         "build_system": "maven",
