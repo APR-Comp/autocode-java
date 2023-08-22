@@ -22,4 +22,15 @@ public class PublicSolutionTest {
         int arr[] = {7,7,7,7,7,7,7};
         assertEquals(49, wateringPlants(arr, 8));
     }
+    @Test(timeout=5000)
+    public void test4(){
+        int arr[] = {7,7};
+        assertEquals(3, wateringPlants(arr, 14));
+    }
+
+    @Test(timeout=5000)
+    public void test5(){
+        int arr[] = {};
+        assertEquals(0, wateringPlants(arr, 14));
+    }
 }

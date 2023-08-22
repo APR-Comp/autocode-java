@@ -35,31 +35,26 @@ Constraints:
  **/
 class Solution {
     public int[] distinctDifferenceArray(int[] nums) {
-        int n = nums.length;
-        int[] diff = new int[n];
-        int prefix = 0, suffix = 0;
-        int[] prefixCount = new int[51];
-        int[] suffixCount = new int[51];
-
-        for (int num : nums) {
-            suffixCount[num]++;
-            if (suffixCount[num] == 1) {
-                suffix++;
-            }
+        // Initialize the output array
+        int[] diff = new int[nums.length];
+        // Initialize sets for prefix and suffix
+        HashSet<Integer> prefixSet = new HashSet<>();
+        HashSet<Integer> suffixSet = new HashSet<>();
+        // Initialize another array to hold nums in reverse order
+        int[] reversed = new int[nums.length];
+        
+        for (int i = 0; i < nums.length; i++) {
+            // Add the elements to the prefixSet and update the diff array
+            prefixSet.add(nums[i]);
+            // Reverse the array for calculating the suffix
+            reversed[nums.length - 1 - i] = nums[i];
         }
-
-        for (int i = 0; i < n; i++) {
-            diff[i] = prefix - suffix;
-            prefixCount[nums[i]]++;
-            if (prefixCount[nums[i]] == 1) {
-                prefix++;
-            }
-
-            if (--suffixCount[nums[i]] == 0) {
-                suffix--;
-            }
+        for (int i = 0; i < nums.length; i++) {
+            // Calculate the suffix
+            if (i != 0) suffixSet.add(reversed[i - 1]);
+            // Calculate the difference
+            diff[i] = prefixSet.size() - suffixSet.size();
         }
-
         return diff;
     }
 }

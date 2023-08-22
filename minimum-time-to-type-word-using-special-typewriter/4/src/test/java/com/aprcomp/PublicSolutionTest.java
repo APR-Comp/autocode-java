@@ -23,5 +23,9 @@ public class PublicSolutionTest {
         String str = "zjpc";
         assertEquals(34, minTimeToType(str));
     }
-
+    @Test(timeout=5000)
+    public void test4(){
+        String str = "";
+        assertEquals(0, minTimeToType(str));
+    }
 }

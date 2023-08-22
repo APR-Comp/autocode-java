@@ -32,5 +32,12 @@ public class PublicSolutionTest {
         assertEquals(arr2, targetIndices(arr, 5));
     }
 
+    @Test(timeout=5000)
+    public void test4(){
+        int arr[] = {1};
+        List<Integer> arr2 = new ArrayList<Integer>();
+        arr2.add(0);
+        assertEquals(arr2, targetIndices(arr, 1));
+    }
 
 }
