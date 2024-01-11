@@ -1,0 +1,271 @@
+--- modify-graph-edge-weights/4/src/main/java/com/aprcomp/Solution.java	2023-12-24 23:54:31.584402938 +0200
++++ modify-graph-edge-weights/4/../reference.java	2023-12-24 23:57:01.402502100 +0200
+@@ -1,101 +1,182 @@
+ package com.aprcomp;
+ import java.util.*;
+-/**java 
+- You are given an undirected weighted connected graph containing n nodes labeled from 0 to n - 1, and an integer array edges where edges[i] = [ai, bi, wi] indicates that there is an edge between nodes ai and bi with weight wi.
+-Some edges have a weight of -1 (wi = -1), while others have a positive weight (wi > 0).
+-Your task is to modify all edges with a weight of -1 by assigning them positive integer values in the range [1, 2 * 10 ** 9] so that the shortest distance between the nodes source and destination becomes equal to an integer target. If there are multiple modifications that make the shortest distance between source and destination equal to target, any of them will be considered correct.
+-Return an array containing all edges (even unmodified ones) in any order if it is possible to make the shortest distance from source to destination equal to target, or an empty array if it's impossible.
+-Note: You are not allowed to modify the weights of edges with initial positive weights.
+- 
+-Example 1:
+-
+-
+-Input: n = 5, edges = [[4,1,-1],[2,0,-1],[0,3,-1],[4,3,-1]], source = 0, destination = 1, target = 5
+-Output: [[4,1,1],[2,0,1],[0,3,3],[4,3,1]]
+-Explanation: The graph above shows a possible modification to the edges, making the distance from 0 to 1 equal to 5.
+-
+-Example 2:
+-
+-
+-Input: n = 3, edges = [[0,1,-1],[0,2,5]], source = 0, destination = 2, target = 6
+-Output: []
+-Explanation: The graph above contains the initial edges. It is not possible to make the distance from 0 to 2 equal to 6 by modifying the edge with weight -1. So, an empty array is returned.
+-
+-Example 3:
+-
+-
+-Input: n = 4, edges = [[1,0,4],[1,2,3],[2,3,5],[0,3,-1]], source = 0, destination = 2, target = 6
+-Output: [[1,0,4],[1,2,3],[2,3,5],[0,3,1]]
+-Explanation: The graph above shows a modified graph having the shortest distance from 0 to 2 as 6.
+-
+- 
+-Constraints:
+-
+-1 <= n <= 100
+-1 <= edges.length <= n * (n - 1) / 2
+-edges[i].length == 3
+-0 <= ai, bi < n
+-wi = -1 or 1 <= wi <= 10 ** 7
+-ai != bi
+-0 <= source, destination < n
+-source != destination
+-1 <= target <= 10 ** 9
+-The graph is connected, and there are no self-loops or repeated edges
+-
+- **/
+ class Solution {
+-    public int[][] modifiedGraphEdges(int n, int[][] edges, int source, int destination, int target) {
+-        long INF = (long) 2e9;
+-        List<int[]>[] graph = new ArrayList[n];
+-        for (int i = 0; i < n; i++) {
+-            graph[i] = new ArrayList<int[]>();
+-        }
+-        for (int[] e : edges) {
+-            e[2] = e[2] == -1 ? (int) INF : e[2];
+-            graph[e[0]].add(new int[] {e[1], e[2]});
+-            graph[e[1]].add(new int[] {e[0], e[2]});
+-        }
+-        long[][] dp = new long[n][n + 1];
+-        for (int i = 0; i < n; i++) {
+-            Arrays.fill(dp[i], Long.MAX_VALUE);
+-        }
+-        dp[source][0] = 0;
+-        PriorityQueue<int[]> heap = new PriorityQueue<int[]>((a, b) -> Long.compare(dp[a[0]][a[1]], dp[b[0]][b[1]]));
+-        heap.offer(new int[] {source, 0});
+-        while (!heap.isEmpty()) {
+-            int[] node = heap.poll();
+-            int u = node[0], k = node[1];
+-            if (dp[u][k] == Long.MAX_VALUE) {
++    //adjacency list
++    HashMap<Integer, Integer>[] map;
++    //indices of edges with -1 weight
++    int[] neg;
++    //length of "neg", source, destination, n
++    int neg_ct, s, t, n;
++    //target
++    long targ;
++    int[][] edges;
++    //MAX assignable weight of any negative edges
++    static int MAX = 2000000000;
++    //INF distance for dijkstra
++    static long INF = 100000000000000000L;
++    //dijkstra dist array
++    static long[] dist = new long[101];
++    //PriorityQueue for Dijkstra
++    static PriorityQueue<Long> q = new PriorityQueue<Long>((p1, p2) -> (p1 - p2 > 0L ? 1 : -1));
++    //sets the weight of all e in edges to the weight stored in the adjacency list
++    //(done before returning the assignment, we simply return "edges" as our answer)
++    public void process(){
++        for(int[] e : edges){
++            e[2] = map[e[0]].get(e[1]);
++        }
++    }
++    //sets all negative edges to weight v
++    public void all(int v){
++        for(int ind : neg){
++            int[] e = edges[ind];
++            map[e[0]].put(e[1], v);
++            map[e[1]].put(e[0], v);
++        }
++    }
++    //sets "count" negative edges to weight v, the rest to v + 1
++    public void partial(int v, int count){
++        for(int i = 0; i < count; ++i){
++            int ind = neg[i];
++            int[] e = edges[ind];
++            map[e[0]].put(e[1], v + 1);
++            map[e[1]].put(e[0], v + 1);
++        }
++        for(int i = count; i < neg_ct; ++i){
++            int ind = neg[i];
++            int[] e = edges[ind];
++            map[e[0]].put(e[1], v);
++            map[e[1]].put(e[0], v);
++        }
++    }
++    //forces a long to store (vertex, distance from source) pair
++    //  optimization for dijkstra
++    public long encode(int a, long b){
++        return (b << 8) + a;
++    }
++    //dijkstra
++    public long dijkstra(){
++        Arrays.fill(dist, INF);
++        q.add(encode(s, 0L));
++        while(!q.isEmpty()){
++            long p = q.poll();
++            int cur = (int)(p & 255);
++            long d = p >> 8;
++            if(d > dist[cur]){
+                 continue;
+             }
+-            if (u == destination && k == n - 1) {
+-                break;
+-            }
+-            for (int[] edge : graph[u]) {
+-                int v = edge[0], w = edge[1];
+-                if (k + 1 <= n && dp[v][k + 1] > dp[u][k] + w) {
+-                    dp[v][k + 1] = dp[u][k] + w;
+-                    heap.offer(new int[] {v, k + 1});
++            dist[cur] = d;
++            for(int nei : map[cur].keySet()){
++                long nd = d + map[cur].get(nei);
++                if(nd < dist[nei]){
++                    q.add(encode(nei, nd));
++                    dist[nei] = nd;
+                 }
+             }
+         }
+-        if (dp[destination][n - 1] > target) {
++        return dist[t];
++    }
++    public int[][] modifiedGraphEdges(int n, int[][] edges, int s, int t, int targ_int) {
++        this.n = n;
++        this.edges = edges;
++        this.s = s;
++        this.t = t;
++        targ = (long)targ_int;
++        neg_ct = 0;
++        map = new HashMap[n];
++        for(int i = 0; i < n; ++i){
++            map[i] = new HashMap<>();
++        }
++        //setting up adjacency_list
++        for(int[] e : edges){
++            if(e[2] == -1){
++                ++neg_ct;
++            }
++            map[e[0]].put(e[1], e[2]);
++            map[e[1]].put(e[0], e[2]);
++        }
++        neg = new int[neg_ct];
++        int neg_ind = 0;
++        //setting up neg
++        for(int i = 0; i < edges.length; ++i){
++            int[] e = edges[i];
++            if(e[2] == -1){
++                neg[neg_ind] = i;
++                ++neg_ind;
++            }
++        }
++        //explained in Additional Logic Section
++        all(1);
++        long shortest = dijkstra();
++        all(MAX);
++        long longest = dijkstra();
++        if(shortest > targ || longest < targ){
+             return new int[0][0];
+         }
+-        int x = n - 1;
+-        while (dp[destination][x - 1] == dp[destination][x]) {
+-            x--;
+-        }
+-        for (int[] e : edges) {
+-            if (e[2] == INF) e[2] = 1;
+-        }
+-        int diff = (int) (target - dp[destination][x]);
+-        for (int[] e : edges) {
+-            if (e[0] == source && e[1] == destination || e[0] == destination && e[1] == source) {
+-                e[2] += diff;
++        if(shortest == targ){
++            all(1);
++            process();
++            return edges;
++        }
++        if(longest == targ){
++            all(MAX);
++            process();
++            return edges;
++        }
++
++        //Binary search I
++        int st = 1, end = MAX;
++        while(st < end){
++            int mid = st + (end - st) / 2;
++            all(mid);
++            long dist = dijkstra();
++            if(dist < targ){
++                st = mid;
++            }
++            else if(dist > targ){
++                end = mid;
++            }
++            else{
++                process();
++                return edges;
++            }
++            if(st + 1 == end){
++                all(end);
++                dist = dijkstra();
++                if(dist < targ){
++                    st = end;
++                }
++                else if(dist > targ){
++                    end = st;
++                }
++                else{
++                    process();
++                    return edges;
++                }
++            }
++        }
++        
++        //Binary Search II
++        int val = st;
++        st = 0;
++        end = neg_ct;
++        while(st < end){
++            int mid = (st + end) / 2;
++            partial(val, mid);
++            long dist = dijkstra();
++            if(dist < targ){
++                st = mid + 1;
++            }
++            else if(dist > targ){
++                end = mid - 1;
++            }
++            else{
++                st = mid;
+                 break;
+             }
+         }
++        partial(val, st);
++        process();
++        long dist = dijkstra();
+         return edges;
+     }
+ }
+\ No newline at end of file

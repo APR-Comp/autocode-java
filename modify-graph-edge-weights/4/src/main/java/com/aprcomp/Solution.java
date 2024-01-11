@@ -45,29 +45,55 @@ The graph is connected, and there are no self-loops or repeated edges
  **/
 class Solution {
     public int[][] modifiedGraphEdges(int n, int[][] edges, int source, int destination, int target) {
-        int[][] graph = new int[n][n];
-        int minEdge = Integer.MAX_VALUE, maxEdge = 0;
-        for(int[] edge: edges){
-            if(edge[2] == -1){
-                edge[2] = 1;
-            } else{
-                minEdge = Math.min(minEdge, edge[2]);
-                maxEdge = Math.max(maxEdge, edge[2]);
-            }
-            graph[edge[0]][edge[1]] = edge[2];
-            graph[edge[1]][edge[0]] = edge[2];
+        long INF = (long) 2e9;
+        List<int[]>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<int[]>();
         }
-        int left = target - (n-1)*maxEdge, right = target - (n-1)*minEdge;
-        if(left < 1 || right < 1) return new int[0][];
-        for(int[] edge: edges){
-            if(graph[edge[0]][edge[1]] == -1){
-                if(left <= right){
-                    edge[2] = left;
-                    left = 1;
-                } else{
-                    edge[2] = right;
-                    right = 1;
+        for (int[] e : edges) {
+            e[2] = e[2] == -1 ? (int) INF : e[2];
+            graph[e[0]].add(new int[] {e[1], e[2]});
+            graph[e[1]].add(new int[] {e[0], e[2]});
+        }
+        long[][] dp = new long[n][n + 1];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], Long.MAX_VALUE);
+        }
+        dp[source][0] = 0;
+        PriorityQueue<int[]> heap = new PriorityQueue<int[]>((a, b) -> Long.compare(dp[a[0]][a[1]], dp[b[0]][b[1]]));
+        heap.offer(new int[] {source, 0});
+        while (!heap.isEmpty()) {
+            int[] node = heap.poll();
+            int u = node[0], k = node[1];
+            if (dp[u][k] == Long.MAX_VALUE) {
+                continue;
+            }
+            if (u == destination && k == n - 1) {
+                break;
+            }
+            for (int[] edge : graph[u]) {
+                int v = edge[0], w = edge[1];
+                if (k + 1 <= n && dp[v][k + 1] > dp[u][k] + w) {
+                    dp[v][k + 1] = dp[u][k] + w;
+                    heap.offer(new int[] {v, k + 1});
                 }
+            }
+        }
+        if (dp[destination][n - 1] > target) {
+            return new int[0][0];
+        }
+        int x = n - 1;
+        while (dp[destination][x - 1] == dp[destination][x]) {
+            x--;
+        }
+        for (int[] e : edges) {
+            if (e[2] == INF) e[2] = 1;
+        }
+        int diff = (int) (target - dp[destination][x]);
+        for (int[] e : edges) {
+            if (e[0] == source && e[1] == destination || e[0] == destination && e[1] == source) {
+                e[2] += diff;
+                break;
             }
         }
         return edges;

@@ -45,45 +45,42 @@ The graph is connected, and there are no self-loops or repeated edges
  **/
 class Solution {
     public int[][] modifiedGraphEdges(int n, int[][] edges, int source, int destination, int target) {
-        int[][] graph = new int[n][n];
-        int[][] result = new int[edges.length][3];
-        for (int i = 0; i < edges.length; i++) {
-            int a = edges[i][0];
-            int b = edges[i][1];
-            int w = edges[i][2];
-            if (w == -1) w = 1;
-            graph[a][b] = w;
-            graph[b][a] = w;
-            result[i][0] = a;
-            result[i][1] = b;
-            result[i][2] = w;
-        }
         int[] dist = new int[n];
+        ArrayList<int[]> ans = new ArrayList<>();
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        ArrayList<int[]>[] graph = new ArrayList[n];
+        for(int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+        
+        for(int i = 0; i < edges.length; i++){
+            if(edges[i][2] == -1){
+                edges[i][2] = 2 * 1000000000;
+                ans.add(edges[i]);
+            }
+            graph[edges[i][0]].add(new int[]{edges[i][2], edges[i][1]});
+            graph[edges[i][1]].add(new int[]{edges[i][2], edges[i][0]});
+        }
+        pq.add(new int[]{0, source});
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[source] = 0;
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
-        pq.add(new int[] {source, 0});
-        while (!pq.isEmpty()) {
-            int[] cur = pq.poll();
-            int node = cur[0], distance = cur[1];
-            if (distance > dist[node]) continue;
-            for (int neighbor = 0; neighbor < n; neighbor++) {
-                if (graph[node][neighbor] != 0) {
-                    int newDistance = distance + graph[node][neighbor];
-                    if (newDistance < dist[neighbor]) {
-                        dist[neighbor] = newDistance;
-                        pq.add(new int[] {neighbor, newDistance});
-                    }
+        
+        while(!pq.isEmpty()){
+            int[] curr = pq.poll();
+            int u = curr[1];
+            if(dist[u] < curr[0]) continue;
+            for(int[] next : graph[u]){
+                int v = next[1];
+                int w = next[0];
+                if(dist[u] + w < dist[v]){
+                    dist[v] = dist[u] + w;
+                    pq.add(new int[]{dist[v], v});
                 }
             }
         }
-        if (dist[destination] > target) return new int[][] {};
-        for (int i = 0; i < result.length; i++) {
-            if (edges[i][2] == -1) {
-                result[i][2] = target - dist[destination] + 1;
-                dist[destination] = target;
-            }
+        if(dist[destination] < target) return new int[][]{};
+        for(int[] edge : ans){
+            edge[2] = Math.min(edge[2], target - dist[edge[1]]);
+            target -= edge[2];
         }
-        return result;
+        return ans.toArray(new int[ans.size()][]);
     }
 }

@@ -1,0 +1,50 @@
+package com.aprcomp;
+import java.util.*;
+/**java 
+ You are given two integers, n and k.
+An array of distinct positive integers is called a k-avoiding array if there does not exist any pair of distinct elements that sum to k.
+Return the minimum possible sum of a k-avoiding array of length n.
+ 
+Example 1:
+
+Input: n = 5, k = 4
+Output: 18
+Explanation: Consider the k-avoiding array [1,2,4,5,6], which has a sum of 18.
+It can be proven that there is no k-avoiding array with a sum less than 18.
+
+Example 2:
+
+Input: n = 2, k = 6
+Output: 3
+Explanation: We can construct the array [1,2], which has a sum of 3.
+It can be proven that there is no k-avoiding array with a sum less than 3.
+
+ 
+Constraints:
+
+1 <= n, k <= 50
+
+ **/
+class Solution {
+    public int minimumSum(int n, int k) {
+        // Initialize sum
+        int sum = 0;
+        
+        // Initialize the smallest possible number
+        int num = 1;
+        
+        // Iterate until we reach n
+        for (int i = 0; i < n; i++) {
+            // Add num to sum
+            sum += num;
+            
+            // If num is equal to k-1, skip k
+            if (num == k - 1)
+                num = k + 1;
+            else
+                num++;
+        }
+        
+        return sum;
+    }
+}

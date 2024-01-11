@@ -45,62 +45,64 @@ The graph is connected, and there are no self-loops or repeated edges
  **/
 class Solution {
     class Edge {
-        int u, v, w;
-        public Edge(int u, int v, int w) {
-            this.u = u;
-            this.v = v;
-            this.w = w;
+        int node, weight;
+        Edge(int n, int w) {
+            node = n;
+            weight = w;
         }
     }
 
     public int[][] modifiedGraphEdges(int n, int[][] edges, int source, int destination, int target) {
-        ArrayList<ArrayList<Edge>> graph = new ArrayList<>();
-        for (int i = 0; i < n; i++)
-            graph.add(new ArrayList<>());
-        PriorityQueue<Edge> pq = new PriorityQueue<>((a, b) -> a.w - b.w);
-        boolean[][] visited = new boolean[n][n];
-        int[][] distance = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++)
-                distance[i][j] = Integer.MAX_VALUE;
-        }
         
-        for (int[] edge : edges) {
-            int u = edge[0], v = edge[1], w = edge[2];
-            if (w == -1) {
-                pq.add(new Edge(u, v, 1));
-                pq.add(new Edge(v, u, 1));
-            } else {
-                graph.get(u).add(new Edge(u, v, w));
-                graph.get(v).add(new Edge(v, u, w));
-            }
+        ArrayList<Edge>[] graph = new ArrayList[n];
+        for(int i = 0; i < n; i++)
+            graph[i] = new ArrayList<>();
+        int[] dist = new int[n];
+        int[] par = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        for(int[] edge: edges) {
+            if(edge[2] == -1)
+                edge[2] = 2000000000;
+            graph[edge[0]].add(new Edge(edge[1], edge[2]));
+            graph[edge[1]].add(new Edge(edge[0], edge[2]));
         }
-        
-        pq.add(new Edge(source, source, 0));
-        distance[source][source] = 0;
-        while (!pq.isEmpty()) {
-            Edge current = pq.poll();
-            if (visited[current.u][current.v])
-                continue;
-            visited[current.u][current.v] = true;
-            for (Edge next : graph.get(current.v)) {
-                if (distance[current.u][current.v] + next.w < distance[current.u][next.v]) {
-                    distance[current.u][next.v] = distance[current.u][current.v] + next.w;
-                    pq.add(new Edge(current.u, next.v, distance[current.u][next.v]));
+
+        PriorityQueue<Edge> pq = new PriorityQueue<>((a,b)->a.weight-b.weight);
+        pq.add(new Edge(source, 0));
+        dist[source] = 0;
+        while(!pq.isEmpty()) {
+            Edge u = pq.poll();
+            if(u.weight != dist[u.node]) continue;
+            for(Edge v: graph[u.node]) {
+                if(dist[v.node] > u.weight+v.weight) {
+                    dist[v.node] = u.weight+v.weight;
+                    par[v.node] = u.node;
+                    pq.add(new Edge(v.node, dist[v.node]));
                 }
             }
         }
-        
-        if (distance[source][destination] > target)
-            return new int[0][0];
-        int[] negEdge = new int[] {source, destination, target - distance[source][destination] + 1};
-        int[][] result = new int[edges.length][3];
-        for (int i = 0; i < edges.length; i++) {
-            if (edges[i][2] == -1)
-                result[i] = negEdge;
-            else
-                result[i] = edges[i];
+        if(dist[destination] < target) return new int[0][0];
+        for(int i = destination; i != source; i = par[i]) {
+            for(Edge e: graph[i]) {
+                if(e.node == par[i]) {
+                    if(dist[destination] > target) {
+                        e.weight -= (dist[destination]-target);
+                        dist[destination] = target;
+                    }
+                }     
+            }
         }
-        return result;
+        int[][] res = new int[edges.length][3];
+        for(int i = 0; i < edges.length; i++) {
+            res[i][0] = edges[i][0];
+            res[i][1] = edges[i][1];
+            for(Edge e: graph[res[i][0]]) {
+                if(e.node == res[i][1]) {
+                    res[i][2] = e.weight;
+                    break;
+                }
+            }
+        }
+        return res;
     }
 }

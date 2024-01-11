@@ -1,0 +1,11 @@
+package com.aprcomp;
+import java.util.*;
+import org.junit.Test;
+import static com.aprcomp.Solution.*;
+import static org.junit.Assert.*;
+public class new_Test_19383 {
+    @Test(timeout=5000)
+    public void test_19383(){
+        assertArrayEquals( new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, new Solution().colorTheArray(33,new int[][]{new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6697},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,6729},new int[]{5,105},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1},new int[]{0,1}}) );
+        }
+}

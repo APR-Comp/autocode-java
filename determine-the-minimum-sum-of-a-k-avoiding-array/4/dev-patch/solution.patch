@@ -1,0 +1,67 @@
+--- determine-the-minimum-sum-of-a-k-avoiding-array/4/src/main/java/com/aprcomp/Solution.java	2023-12-06 21:17:30.146141688 +0200
++++ determine-the-minimum-sum-of-a-k-avoiding-array/4/../reference.java	2023-12-24 12:50:59.748114656 +0200
+@@ -1,45 +1,23 @@
+ package com.aprcomp;
+ import java.util.*;
+-/**java 
+- You are given two integers, n and k.
+-An array of distinct positive integers is called a k-avoiding array if there does not exist any pair of distinct elements that sum to k.
+-Return the minimum possible sum of a k-avoiding array of length n.
+- 
+-Example 1:
+ 
+-Input: n = 5, k = 4
+-Output: 18
+-Explanation: Consider the k-avoiding array [1,2,4,5,6], which has a sum of 18.
+-It can be proven that there is no k-avoiding array with a sum less than 18.
+-
+-Example 2:
+-
+-Input: n = 2, k = 6
+-Output: 3
+-Explanation: We can construct the array [1,2], which has a sum of 3.
+-It can be proven that there is no k-avoiding array with a sum less than 3.
+-
+- 
+-Constraints:
+-
+-1 <= n, k <= 50
+-
+- **/
+-class Solution {
+-    public int minimumSum(int n, int k) {
+-        int[] arr = new int[n];
+-        int sum = 0;
+-        int count = 1;
+-
+-        for (int i = 0; i < n; i++) {
+-            if (count == k) {
+-                count += 2;
+-            } else {
+-                count++;
++public class Solution {
++        int calculateSumInRange(int a, int n) {
++            int sum = (n * (2 * a + (n - 1))) / 2;
++            return sum;
++        }
++    
++        public int minimumSum(int quantity, int k) {
++            int middle = k / 2;
++            
++            if (quantity <= middle) {
++                return quantity * (quantity + 1) / 2;
+             }
+-            arr[i] = count;
+-            sum += arr[i];
++            
++            int leftSum = middle * (middle + 1) / 2;
++            
++            int remainingNumbers = quantity - middle;
++            
++            return leftSum + calculateSumInRange(k, remainingNumbers);
+         }
+-        return sum;
+-    }
+-}
+\ No newline at end of file
++}

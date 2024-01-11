@@ -1,0 +1,29 @@
+#!/bin/bash
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+benchmark_name=$(echo $script_dir | rev | cut -d "/" -f 3 | rev)
+project_name=$(echo $script_dir | rev | cut -d "/" -f 2 | rev)
+bug_id=$(echo $script_dir | rev | cut -d "/" -f 1 | rev)
+dir_name=/experiment/$benchmark_name/$project_name/$bug_id
+
+
+cd $dir_name/src
+bash $script_dir/run_test > /dev/null 2>&1
+exit_code_1=$?
+patch $dir_name/src/src/main/java/com/aprcomp/Solution.java < $script_dir/dev-patch/solution.patch
+bash $script_dir/build_subject > /dev/null 2>&1
+bash $script_dir/run_public_tests > /dev/null 2>&1
+exit_code_2=$?
+bash $script_dir/run_private_tests > /dev/null 2>&1
+exit_code_3=$?
+patch -R $dir_name/src/src/main/java/com/aprcomp/Solution.java < $script_dir/dev-patch/solution.patch
+echo "EXIT-BUG=" $exit_code_1 " EXIT-FIX-PUBLIC=" $exit_code_2 " EXIT-FIX-PRIVATE=" $exit_code_3
+if [[ $exit_code_2 -eq 0 ]] && [[  $exit_code_1 -ne 0 ]] && [[  $exit_code_3 -eq 0 ]]
+then
+  echo "PASS"
+
+  exit 0
+else
+  echo "FAIL"
+  exit 1
+fi;
+

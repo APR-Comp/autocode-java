@@ -1,0 +1,11 @@
+package com.aprcomp;
+import java.util.*;
+import org.junit.Test;
+import static com.aprcomp.Solution.*;
+import static org.junit.Assert.*;
+public class private_new_Test_40132 {
+    @Test(timeout=5000)
+    public void test_40132(){
+        assertEquals(630L, new Solution().countInterestingSubarrays( List.of(242,1,1,1,1,1,1313734657,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,1313754703,79,1,920319),1,0  ) );
+        }
+}
