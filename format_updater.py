@@ -21,7 +21,7 @@ for entry in contents:
                 + entry["source_file"][:-5].replace(".", "/")
                 + ".java"
             ),
-            "function": "main",
+            #"function": "main",
         },
     }
     entry["output_dir_abspath"] = "/output"
