@@ -19,10 +19,6 @@ The test suite used for evaluation is generated from the public test cases provi
 For further information, the file `testcases/<PROBLEM>/jazzer/src/test/java/com/example/SimpleFuzzTest.java` presents the test harness over the 
 `testcases/<PROBLEM>/jazzer/src/main/java/com/example/Solution.java` file, based on `reference.java`.
 
-## Competition reproduction
-
-* For competition reproduction purposes, we have included config files in the `configs` folder containing the exact setup used for the competition. To execute the specific experiment, install Cerberus and pass the config file through the `-c` flag, `-c <PATH_TO_CONFIGS>/llmr.cerberus.config`.
-
 ## Metadata generation
 
 * To regenerate the metadata, execute the `metadata-generator.py` script. This script will traverse all problems, insert the subject scripts (`test_subject`, `build_subject`, `'clean_subject`, `config_subject`, `install_deps`) and generate metadata entries with all required information. To ensure correct execution of the script, ensure that Java 11 and Maven are installed on the machine and this repository must be located in the home directory of the user due to the usage of relative paths. To change this requirement, modify line 6 in `test_subject_local`.
