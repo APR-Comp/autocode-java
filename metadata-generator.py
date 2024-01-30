@@ -11,7 +11,7 @@ template = """
         "line_numbers": [],
         "dependencies": [],
         "language": "java",
-        "java_version": 8,
+        "java_version": 11,
         "build_system": "maven",
         "config_script": "config_subject",
         "build_script": "build_subject",
@@ -25,7 +25,13 @@ template = """
         "failing_test_identifiers": [{failing_test_identifiers}],
         "passing_test_identifiers": [{passing_test_identifiers}],
         "count_neg": {failing_test_identifiers_count},
-        "count_pos": {passing_test_identifiers_count}
+        "count_pos": {passing_test_identifiers_count},
+        "pvt_test_script": "run_private_tests",
+        "pub_test_script": "run_public_tests",
+        "root_abspath": "/experiment/{subject}/{bug_id}/src",
+        "entrypoint": {
+            "file": "src/main/java/com/aprcomp/Solution.java"
+        },
     }},
 """
 
@@ -36,7 +42,7 @@ file.write("[")
 id = 0
 skipper = ""
 for subject in sorted(os.listdir('./')):
-    if os.path.isfile(subject) or subject in ['testcases'] or subject.startswith('.'):
+    if os.path.isfile(subject) or subject in ['testcases', 'crawler', 'configs', 'target'] or subject.startswith('.'):
         continue
     
     # if not subject.startswith(skipper):
