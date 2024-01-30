@@ -11,7 +11,7 @@ template = """
         "line_numbers": [],
         "dependencies": [],
         "language": "java",
-        "java_version": 8,
+        "java_version": 11,
         "build_system": "maven",
         "config_script": "config_subject",
         "build_script": "build_subject",
@@ -22,10 +22,16 @@ template = """
         "subject": "{subject}",
         "bug_id": "{bug_id}",
         "source_file": "com.aprcomp.Solution",
-        "failing_test": [{failing_tests}],
-        "passing_test": [{passing_tests}],
-        "count_neg": {failing_test_count},
-        "count_pos": {passing_test_count}
+        "failing_test_identifiers": [{failing_test_identifiers}],
+        "passing_test_identifiers": [{passing_test_identifiers}],
+        "count_neg": {failing_test_identifiers_count},
+        "count_pos": {passing_test_identifiers_count},
+        "pvt_test_script": "run_private_tests",
+        "pub_test_script": "run_public_tests",
+        "root_abspath": "/experiment/{subject}/{bug_id}/src",
+        "entrypoint": {
+            "file": "src/main/java/com/aprcomp/Solution.java"
+        },
     }},
 """
 
@@ -36,7 +42,7 @@ file.write("[")
 id = 0
 skipper = ""
 for subject in sorted(os.listdir('./')):
-    if os.path.isfile(subject) or subject in ['testcases'] or subject.startswith('.'):
+    if os.path.isfile(subject) or subject in ['testcases', 'crawler', 'configs', 'target'] or subject.startswith('.'):
         continue
     
     # if not subject.startswith(skipper):
@@ -53,8 +59,8 @@ for subject in sorted(os.listdir('./')):
                     os.path.join(subject, bug_id, 'test_subject'))
         os.chdir(os.path.join(subject, bug_id))
 
-        passing_tests = []
-        failing_tests = []
+        passing_test_identifiers = []
+        failing_test_identifiers = []
         print("I AM IN {}".format(os.getcwd()))
         for test in sorted(os.listdir(os.path.join('src', 'test', 'java', 'com', 'aprcomp'))):
             test_file = test[:-len('.java')]
@@ -65,9 +71,9 @@ for subject in sorted(os.listdir('./')):
             res = os.system("./test_subject '{}'".format(qualified_test_name))
             # print(res)
             if res == 0:
-                passing_tests.append(qualified_test_name)
+                passing_test_identifiers.append(qualified_test_name)
             else:
-                failing_tests.append(qualified_test_name)
+                failing_test_identifiers.append(qualified_test_name)
 
         # input()
         os.chdir(root)
@@ -77,10 +83,10 @@ for subject in sorted(os.listdir('./')):
         file.write(template.format(subject=subject,
                                    id=id,
                                    bug_id=bug_id,
-                                   passing_tests=','.join(map(lambda x : f'"{x}"',passing_tests)),
-                                   failing_tests=','.join(map(lambda x : f'"{x}"',failing_tests)),
-                                   failing_test_count=len(failing_tests),
-                                   passing_test_count=len(passing_tests)
+                                   passing_test_identifiers=','.join(map(lambda x : f'"{x}"',passing_test_identifiers)),
+                                   failing_test_identifiers=','.join(map(lambda x : f'"{x}"',failing_test_identifiers)),
+                                   failing_test_identifiers_count=len(failing_test_identifiers),
+                                   passing_test_identifiers_count=len(passing_test_identifiers)
                                    ))
 
 file.write("]")

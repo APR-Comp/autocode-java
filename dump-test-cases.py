@@ -23,7 +23,7 @@ def read_json(file_path: str):
 
 meta_data = read_json("meta-data.json")
 for bug in meta_data:
-    test_id_list = bug["failing_test"] + bug["passing_test"]
+    test_id_list = bug["failing_test_identifiers"] + bug["passing_test_identifiers"]
     subject = bug["subject"]
     bug_id = bug["bug_id"]
     dir_name = f"{subject}/{bug_id}"
